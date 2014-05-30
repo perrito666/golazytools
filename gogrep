@@ -1,7 +1,12 @@
 #!/bin/bash
-GREPPATH=$2
-: ${GREPPATH:=.}
-MATCHFILES=$(grep -rl $1 $GREPPATH)
+#TODO: Use getopts
+GREPPATH=$1
+if [ "$#" -eq 1 ]; then
+	echo "Illegal number of parameters"
+	exit 1
+fi
+QUERY="${*:2}"
+MATCHFILES=$(grep -rl "$QUERY"  $GREPPATH)
 
 LASTPACKAGE=""
 for EACHFILE in $MATCHFILES; do
@@ -12,6 +17,6 @@ for EACHFILE in $MATCHFILES; do
 		echo -e "\n-> Package: " $(echo $NEWPACKAGE| cut -d " " -f 2);
 	fi
 	echo -e "\n--> File: ${EACHFILE} \n" 
-	grep --color=always -n $1 $EACHFILE;
+	grep --color=always -n "$QUERY" $EACHFILE;
 done;
 
