@@ -1,0 +1,17 @@
+#!/bin/bash
+GREPPATH=$2
+: ${GREPPATH:=.}
+MATCHFILES=$(grep -rl $1 $GREPPATH)
+
+LASTPACKAGE=""
+for EACHFILE in $MATCHFILES; do
+	NEWPACKAGE=$(grep --color=always -s -m 1 "^package" $EACHFILE);
+	if [ "$NEWPACKAGE" != "$LASTPACKAGE" ]; then
+		LASTPACKAGE=$NEWPACKAGE;
+		echo "------------------------------------------------------"
+		echo -e "\n-> Package: " $(echo $NEWPACKAGE| cut -d " " -f 2);
+	fi
+	echo -e "\n--> File: ${EACHFILE} \n" 
+	grep --color=always -n $1 $EACHFILE;
+done;
+
